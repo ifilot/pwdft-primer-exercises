@@ -1,0 +1,5 @@
+numpy
+scipy
+matplotlib
+threadpoolctl
+pypwdft>=0.3.0
