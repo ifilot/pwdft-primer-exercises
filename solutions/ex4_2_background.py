@@ -36,7 +36,7 @@ def main():
         e = electrostatics(L, N)
         print('%4i  %8.4f  %8.4f  %8.4f  %9.4f' % (L, *e, sum(e)))
         for name, val, ref in zip(('E_H', 'E_nuc', 'E_Ewald'), e, table[L]):
-            pwlib.check('%s, L = %i (primer, Table)' % (name, L), val, ref, 5e-5)
+            pwlib.check('%s, L = %i (primer, table in Section 4)' % (name, L), val, ref, 5e-5)
         pwlib.check('E_Ewald = -xi / (2L), L = %i' % L, e[2], -XI / (2 * L), 1e-6)
         pwlib.check('sum = isolated value, L = %i' % L, sum(e), sum(iso), 1e-6)
     print('isolated: %8.4f  %8.4f  %8.4f  %9.4f' % (*iso, sum(iso)))

@@ -63,6 +63,7 @@ def main():
     # TODO: kinetic energies of both orbitals
     T5 = None
     T6 = None
+    pwlib.check('E_kin(psi5) on the grid', T5, 2.000888, 1e-6)
     pwlib.check('E_kin(psi5) vs exact', T5, dat['ekin_exact'][0], 1e-3)
     pwlib.check('E_kin(psi5) = E_kin(psi6)', T5 - T6, 0.0, 1e-10)
 

@@ -19,7 +19,7 @@ def main():
     E, eps, face = [], [], []
     for L in Ls:
         res = PWDFT(pwlib.diatomic('H2', L), cutoff=ecut, xc='pbe',
-                    pseudopotential='all-electron').run(bands=4)
+                    pseudopotential='all-electron').run(bands=5)
         E.append(res.energy.total)
         eps.append(res.orbitals.energies)
         # PyPWDFT stores grids as [z, y, x]; convert to the pwlib convention

@@ -13,21 +13,16 @@ import pwlib
 OUTPUT = Path(__file__).resolve().parent / 'output'
 XI = 2.837297
 SPACING = 10.0 / 32          # fixed grid spacing (bohr), converged for alpha >= 1
-INCLUDE_1S = False           # optional part (d): needs ~4 GB of memory and minutes
 
 
-def electrostatics(a0, alpha, density='gaussian'):
+def electrostatics(a0, alpha):
     """E_rep and E_nuc of one normalized cloud centred on a proton."""
-    N = int(round(a0 / SPACING)) if density == 'gaussian' else int(round(a0 * 12.8))
+    N = int(round(a0 / SPACING))
     M = pwlib.cubic_cell(a0)
     r = pwlib.realspace_grid(M, N)
     G, G2 = pwlib.gvectors(M, N)
     R = np.full(3, a0 / 2)
-    if density == 'gaussian':
-        rho = pwlib.gaussian_density(r, M, R, alpha)
-    else:                                   # hydrogen 1s density
-        d = np.linalg.norm(pwlib.minimum_image(r, R, M), axis=-1)
-        rho = np.exp(-2.0 * d) / np.pi
+    rho = pwlib.gaussian_density(r, M, R, alpha)
     vext = pwlib.external_potential(G, G2, M, [R], [1.0])
     vh = pwlib.hartree_potential(rho, G2)
     return pwlib.integrate(vh * rho, M), pwlib.integrate(vext * rho, M)
@@ -76,13 +71,6 @@ def main():
     OUTPUT.mkdir(exist_ok=True)
     fig.savefig(OUTPUT / 'chal3_3_madelung.png', dpi=150)
 
-    if INCLUDE_1S:
-        # (d) the hydrogen 1s density: cusp requires a much finer grid
-        a1 = np.array([10.0, 15.0, 20.0])
-        res = np.array([electrostatics(a, None, density='1s') for a in a1])
-        p, q = fit(a1, res[:, 1] + 1.0)
-        print('1s: xi from E_nuc = %.5f, spread = %.3f (expected %.3f)'
-              % (p, q, -2 * np.pi * 3 / 3))
     plt.show()
 
 

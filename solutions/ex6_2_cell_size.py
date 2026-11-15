@@ -22,7 +22,7 @@ def main():
     E, eps, face = [], [], []
     for L in Ls:
         res = PWDFT(pwlib.diatomic('H2', L), cutoff=ecut, xc='pbe',
-                    pseudopotential='all-electron').run(bands=4)
+                    pseudopotential='all-electron').run(bands=5)
         E.append(res.energy.total)
         eps.append(res.orbitals.energies)
         rho = pwlib.from_pypwdft(res.density)
@@ -41,12 +41,13 @@ def main():
     print('change from L = 12 to 20: HOMO %.1f mHt, total energy %.2f mHt'
           % (1000 * (eps[-1, 0] - eps[2, 0]), 1000 * (E[-1] - E[2])))
 
-    # (c) unoccupied states: box states whose energies approach zero; for the
-    # higher ones eps * L^2 is roughly constant (particle in a box)
-    for k in (2, 3):
+    # (c) unoccupied states: box states whose energies approach zero as the
+    # cell grows; for the higher ones eps * L^2 is roughly constant (particle
+    # in a box), the lowest one does not follow this law
+    for k in range(1, eps.shape[1]):
         print('eps_%d * L^2:' % (k + 1), np.round(eps[:, k] * Ls**2, 2))
-    spread = np.ptp(eps[:, 3] * Ls**2) / np.mean(eps[:, 3] * Ls**2)
-    pwlib.check('eps_4 * L^2 constant to within 15%', spread, 0.0, 0.15)
+    pwlib.check('box states 4 and 5 are degenerate (all L)',
+                np.abs(eps[:, 3] - eps[:, 4]).max(), 0.0, 1e-4)
 
     fig, ax = plt.subplots(1, 2, figsize=(10, 4))
     ax[0].plot(Ls, 1000 * (E - E[-1]), 'o-')

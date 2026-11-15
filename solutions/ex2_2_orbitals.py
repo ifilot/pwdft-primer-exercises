@@ -88,6 +88,7 @@ def main():
     T5, T6 = pwlib.kinetic_energy(c5, G2), pwlib.kinetic_energy(c6, G2)
     print('E_kin(psi5) = %.6f, E_kin(psi6) = %.6f, exact = %.6f'
           % (T5, T6, dat['ekin_exact'][0]))
+    pwlib.check('E_kin(psi5) on the grid', T5, 2.000888, 1e-6)
     pwlib.check('E_kin(psi5) vs exact', T5, dat['ekin_exact'][0], 1e-3)
     pwlib.check('E_kin(psi5) = E_kin(psi6)', T5 - T6, 0.0, 1e-10)
 

@@ -39,8 +39,8 @@ def main():
 
     # (a) nuclear attraction
     enuc, erep = energies(a0, N, R)
-    pwlib.check('E_nuc vs eq. (epot_periodic)', enuc, epot_periodic(a0), 1e-6)
-    pwlib.check('E_nuc vs primer Table (L = 10)', enuc, -1.3136, 5e-5)
+    pwlib.check('E_nuc vs the periodic-system formula (Section 3)', enuc, epot_periodic(a0), 1e-6)
+    pwlib.check('E_nuc vs Table in Section 4 (L = 10)', enuc, -1.3136, 5e-5)
 
     # (b) TODO: show that E_nuc + E_rep deviates from the isolated value
     # 2 (1 - sqrt 2) / sqrt(pi) by only 2 pi <r^2> / (3 a0^3), for a0 = 10

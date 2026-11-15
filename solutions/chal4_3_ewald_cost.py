@@ -41,7 +41,9 @@ def ewald_fast(M, positions, charges, gcut=2.0, gamma=1e-8):
     B = 2.0 * np.pi * np.linalg.inv(M.T)
     G = pwlib.integer_vectors(mmax) @ B
     G2 = np.einsum('ij,ij->i', G, G)
-    S = np.exp(1j * G @ R.T) @ q
+    S = np.zeros(len(G), dtype=complex)
+    for j in range(len(q)):                      # atom by atom: little memory
+        S += q[j] * np.exp(1j * G @ R[j])
     Elr = 2.0 * np.pi / Omega * np.sum(np.exp(-0.25 * G2 / alpha) / G2
                                        * np.abs(S)**2)
 
@@ -83,18 +85,18 @@ def main():
     pwlib.check('Madelung constant from a 2x2x2 NaCl supercell',
                 -E / (len(qs) / 2) * (a / 2), M_NACL, 1e-6)
 
-    # (b) cost versus G_cut for three systems
-    systems = {
-        'CO, a0 = 10': (M, pos, q),
-        'CO, a0 = 20': (pwlib.cubic_cell(20.0), pos + 5.0, q),
-        'NaCl 2x2x2 (64 ions)': (Ms, ps, qs),
-    }
-    gcuts = np.array([0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0])
+    # (b) cost versus G_cut. For a single CO molecule the timings are
+    # dominated by Python overhead (< 1 ms), so we use rock-salt supercells
+    systems = {}
+    for n in (1, 2, 3):
+        Mx, px, qx = nacl_supercell(a, n)
+        systems['NaCl %dx%dx%d (%d ions)' % (n, n, n, len(qx))] = (Mx, px, qx)
+    gcuts = np.array([0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0])
     fig, ax = plt.subplots(figsize=(6, 4))
     for name, (Mx, px, qx) in systems.items():
         times = np.array([timing(ewald_fast, Mx, px, qx, gcut=g)[0] for g in gcuts])
         best = gcuts[np.argmin(times)]
-        print('%-22s optimal G_cut = %.2f (t = %.2e s); at G_cut = 2: %.2e s'
+        print('%-24s optimal G_cut = %.2f bohr^-1 (t = %.2e s); at G_cut = 2: %.2e s'
               % (name, best, times.min(), times[gcuts == 2.0][0]))
         ax.loglog(gcuts, times, 'o-', label=name)
     ax.set_xlabel(r'$G_\mathrm{cut}$ [bohr$^{-1}$]')

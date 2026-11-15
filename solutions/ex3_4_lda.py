@@ -38,6 +38,18 @@ def main():
         an = pwlib.integrate(fun(rho)[1] * drho, M)
         pwlib.check('dE/d(eps) vs integral of %s * drho' % label, fd, an, 1e-7)
 
+    # optional: a broad perturbation that does not vanish where rho does; in
+    # the vacuum, eps * drho exceeds rho, so E(rho + eps drho) is no longer
+    # linear in eps there and the finite difference deviates
+    broad = np.cos(2 * np.pi * r[..., 0] / a0)
+    for label, fun in (('v_x', pwlib.lda_x), ('v_xc', pwlib.lda_xc)):
+        def energy(n):
+            return pwlib.integrate(n * fun(n)[0], M)
+        fd = (energy(rho + eps * broad) - energy(rho - eps * broad)) / (2 * eps)
+        an = pwlib.integrate(fun(rho)[1] * broad, M)
+        print('broad perturbation, %-4s: finite difference %+.6f, integral %+.6f '
+              '(relative deviation %.0f %%)' % (label, fd, an, 100 * abs(fd / an - 1)))
+
     # (c) the gradient of the density from its plane-wave expansion
     for Ng, tol in ((32, 1e-5), (48, 1e-10)):
         Mg = pwlib.cubic_cell(a0)

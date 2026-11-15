@@ -37,16 +37,18 @@ def main():
     E = pwlib.energy_components(C, M, G2, vext, eewald)
     for k, v in E.items():
         print('  %-8s %+.6f Ht' % (k, v))
-    ref = {'kinetic': 31.907966, 'nuclear': -81.735803, 'hartree': 19.038083,
+    ref = {'kinetic': 31.907965, 'nuclear': -81.735803, 'hartree': 19.038083,
            'xc': -6.284507, 'ewald': -0.481269, 'total': -37.555531}
     for k in ref:
         pwlib.check('E_%s' % k, E[k], ref[k], 2e-6)
 
     # (c) TODO: compare 2 * sum of the orbital energies (dat['eigenvalues'])
     # with the total energy, and reconstruct the total energy from the
-    # orbital energies by correcting for double counting
+    # orbital energies: correct for the double counting and add E_Ewald
 
-    # (d) TODO: print E_nuc + E_H + E_Ewald
+    # (d) TODO: the largest kinetic energy 1/2 |G|^2 along a Cartesian axis of
+    # this grid; compare with the cut-off that the carbon 1s electrons would
+    # need according to Challenge 2.3 (E_cut ~ 23 Z^2 Ht)
 
 
 if __name__ == '__main__':

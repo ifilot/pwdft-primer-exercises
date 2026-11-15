@@ -26,7 +26,7 @@ def main():
     d = np.linalg.norm(pwlib.minimum_image(r, RO, M), axis=-1)
     exact = (np.sqrt(2) * np.exp(-0.5 * d**2 / rs**2)
              / (rs**1.5 * np.sqrt(gamma(1.5)))) / np.sqrt(4 * np.pi)
-    pwlib.check('real-space projector vs eq. (gth_projector)',
+    pwlib.check('real-space projector vs the GTH projector formula (Section 7)',
                 np.abs(pr - exact).max() / exact.max(), 0.0, 1e-3)
     pwlib.check('projector is real in real space', np.abs(pr.imag).max(), 0.0, 1e-10)
 

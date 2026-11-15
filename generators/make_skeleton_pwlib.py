@@ -80,9 +80,10 @@ HINTS = {
     # in place of -4 pi Z / |G|^2, and keep the G = 0 coefficient.""",
     'gth_projector_s_g': """
     # Hints:
-    #  * f(G) = 4 pi^(5/4) sqrt(2 rs^3) exp(-G^2 rs^2 / 2) for l = 0, i = 1.
-    #  * Multiply by Y_00 = 1/sqrt(4 pi), the phase factor exp(-i G.R) and
-    #    1/sqrt(Omega).""",
+    #  * Use the expressions for the projectors in Appendix B of the primer,
+    #    with l = 0 and i = 1 (look up Q in the table).
+    #  * Do not forget the angular part, the phase factor and the
+    #    normalization of the plane waves.""",
     'lowest_eigenstates_arpack': """
     # Hints:
     #  * scipy.sparse.linalg.eigsh(H, k=nstates, which='SA', tol=tol)
@@ -102,16 +103,16 @@ EWALD_STUB = '''
     B = 2.0 * np.pi * np.linalg.inv(M.T)
     G = integer_vectors(mmax) @ B
 
-    # TODO: short-range energy E_sr (eq. ewald_sr). Loop over all pairs
+    # TODO: short-range energy E_sr (short-range term, Section 4). Loop over all pairs
     # (i, j); for each pair compute the distances |R_i - R_j + n| for all n
     # at once and skip the term n = 0 when i == j. Use scipy's erfc.
     Esr = 0.0
 
-    # TODO: long-range energy E_lr (eq. long-range-cos)
+    # TODO: long-range energy E_lr (long-range term with cosines, Section 4)
     Elr = 0.0
 
-    # TODO: self-interaction E_s (eq. ewald_self) and electroneutrality
-    # term E_en (eq. ewald_en)
+    # TODO: self-interaction E_s (self-interaction term, Section 4) and electroneutrality
+    # term E_en (electroneutrality term, Section 4)
     Es = 0.0
     Een = 0.0
 

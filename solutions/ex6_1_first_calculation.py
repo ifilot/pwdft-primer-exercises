@@ -33,7 +33,7 @@ def main():
     pwlib.check('error at 20 Ht (primer: 15 mHt)', res.energy.total - E_REF_H2,
                 0.015, 1e-3)
 
-    # number of plane waves: the volume of the sphere |G| <= sqrt(2 E_cut),
+    # (b) number of plane waves: the volume of the sphere |G| <= sqrt(2 E_cut),
     # divided by the volume (2 pi)^3 / Omega per G-vector
     for ecut, r in results.items():
         estimate = L**3 / (2 * np.pi)**3 * 4 * np.pi / 3 * (2 * ecut)**1.5
@@ -42,7 +42,7 @@ def main():
         pwlib.check('N_pw estimate, E_cut = %d' % ecut,
                     r.basis.plane_waves / estimate, 1.0, 0.01)
 
-    # (b) convergence with the cut-off energy
+    # (c) convergence with the cut-off energy
     print('\nE_cut   E_total       error [mHt]   eps_1 [Ht]')
     for ecut, r in results.items():
         print('%4d   %.6f   %8.2f     %.5f' % (ecut, r.energy.total,

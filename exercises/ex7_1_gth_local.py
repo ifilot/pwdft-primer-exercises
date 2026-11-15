@@ -23,8 +23,10 @@ def main():
     # (a) the G = 0 constant and the value at the nucleus
     alpha = pwlib.gth_local_g(np.array([0.0]), Z, rloc, C)[0]
     pwlib.check('alpha (primer, appendix)', alpha, 0.134, 5e-4)
-    pwlib.check('nu_loc(0) (primer: about -36 Ht)', pwlib.gth_local_r(0.0, Z, rloc, C),
-                -36.24, 0.01)
+    # TODO: nu_loc(0) from your gth_local_g, using
+    #   nu(0) = (2 pi)^-3 int nu(G) d^3G = 1/(2 pi^2) int_0^inf nu(G) G^2 dG
+    v0 = None
+    pwlib.check('nu_loc(0) from nu_loc(G) (primer: about -36 Ht)', v0, -36.24, 0.01)
 
     # (b) TODO: plot -nu_loc(G) against 1/2 G^2 on log-log axes together with
     # 4 pi Z_ion / G^2 and 4 pi Z / G^2 (Z = 8), and find where the ratio
@@ -36,7 +38,7 @@ def main():
     # which should equal nu_loc(G) + 4 pi Z_ion / G^2 (use scipy's quad)
 
     # (c) the potential on the grid of a periodic cell
-    for a0, N in ((10.0, 64), (15.0, 96), (20.0, 128)):
+    for a0, N in ((10.0, 128), (15.0, 144), (20.0, 192)):
         M = pwlib.cubic_cell(a0)
         G, G2 = pwlib.gvectors(M, N)
         R = np.full(3, a0 / 2)
@@ -44,7 +46,7 @@ def main():
         shift = v[N // 2, N // 2, N // 2] - pwlib.gth_local_r(0.0, Z, rloc, C)
         # TODO: your prediction for the shift (see the description)
         pred = None
-        pwlib.check('offset at the nucleus, a0 = %g' % a0, shift, pred, 1e-3)
+        pwlib.check('offset at the nucleus, a0 = %g' % a0, shift, pred, 1e-5)
     plt.show()
 
 

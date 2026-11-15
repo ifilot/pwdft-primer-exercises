@@ -52,10 +52,6 @@ def main():
     pwlib.check('spread of E_Ewald over G_cut', np.ptp(energies), 0.0, 1e-8)
     pwlib.check('E_Ewald of CO in a 10 bohr cell', energies[2], -5.99562232, 1e-7)
 
-    # (e) the same nuclei without background: the bare pair repulsion
-    print('bare C-O repulsion Z_C Z_O / d = %.5f Ht'
-          % (48.0 / np.linalg.norm(pos[0] - pos[1])))
-
 
 if __name__ == '__main__':
     main()

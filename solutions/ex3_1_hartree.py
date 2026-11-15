@@ -16,7 +16,7 @@ XI = 2.837297       # Madelung constant, simple cubic, neutralizing background
 
 
 def erep_periodic(a0, r2=0.75):
-    """Expected repulsion energy of the periodic system (primer, eq. erep_periodic)."""
+    """Expected repulsion energy of the periodic system (primer, Section 3)."""
     return 2.0 / np.sqrt(np.pi) - XI / a0 + 4.0 * np.pi * r2 / (3.0 * a0**3)
 
 
@@ -41,9 +41,9 @@ def main():
     rho = pwlib.gaussian_density(r, M, centre, alpha=2.0)
     vh = pwlib.hartree_potential(rho, G2)
     erep = pwlib.integrate(vh * rho, M)
-    pwlib.check('E_rep vs eq. (erep_periodic), N = 48', erep,
-                erep_periodic(a0), 1e-6)
-    pwlib.check('E_H = E_rep / 2 vs primer Table (L = 10)', 0.5 * erep,
+    pwlib.check('E_rep vs the periodic-system formula (Section 3), N = 48', erep,
+                erep_periodic(a0), 1e-7)
+    pwlib.check('E_H = E_rep / 2 vs Table in Section 4 (L = 10)', 0.5 * erep,
                 0.4239, 5e-5)
     pwlib.check('E_rep - E_rep^iso (Madelung shift)', erep - 2 / np.sqrt(np.pi),
                 -XI / a0 + np.pi / a0**3, 1e-6)

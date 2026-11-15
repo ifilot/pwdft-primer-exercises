@@ -31,9 +31,9 @@ def main():
     erep = None          # value for N = 48
     vh, r, N = None, None, 48
 
-    pwlib.check('E_rep vs eq. (erep_periodic), N = 48', erep,
-                erep_periodic(a0), 1e-6)
-    pwlib.check('E_H = E_rep / 2 vs primer Table (L = 10)', 0.5 * erep,
+    pwlib.check('E_rep vs the periodic-system formula (Section 3), N = 48', erep,
+                erep_periodic(a0), 1e-7)
+    pwlib.check('E_H = E_rep / 2 vs Table in Section 4 (L = 10)', 0.5 * erep,
                 0.4239, 5e-5)
 
     # (b) the potential itself

@@ -288,16 +288,16 @@ def ewald_energy(M, positions, charges, gcut=2.0, gamma=1e-8,
     B = 2.0 * np.pi * np.linalg.inv(M.T)
     G = integer_vectors(mmax) @ B
 
-    # TODO: short-range energy E_sr (eq. ewald_sr). Loop over all pairs
+    # TODO: short-range energy E_sr (short-range term, Section 4). Loop over all pairs
     # (i, j); for each pair compute the distances |R_i - R_j + n| for all n
     # at once and skip the term n = 0 when i == j. Use scipy's erfc.
     Esr = 0.0
 
-    # TODO: long-range energy E_lr (eq. long-range-cos)
+    # TODO: long-range energy E_lr (long-range term with cosines, Section 4)
     Elr = 0.0
 
-    # TODO: self-interaction E_s (eq. ewald_self) and electroneutrality
-    # term E_en (eq. ewald_en)
+    # TODO: self-interaction E_s (self-interaction term, Section 4) and electroneutrality
+    # term E_en (electroneutrality term, Section 4)
     Es = 0.0
     Een = 0.0
 
@@ -447,7 +447,7 @@ GTH_O = {'Zion': 6.0, 'rloc': 0.24455430, 'C': (-16.66721480, 2.48731132, 0.0, 0
 
 
 def gth_local_r(r, Zion, rloc, C):
-    """[provided] GTH local potential nu_loc(r) in real space (eq. gth_local)."""
+    """[provided] GTH local potential nu_loc(r) in real space (primer, Section 7)."""
     from scipy.special import erf
     r = np.asarray(r, dtype=float)
     x = r / rloc
@@ -461,7 +461,7 @@ def gth_local_r(r, Zion, rloc, C):
 def gth_local_g(G2, Zion, rloc, C):
     """
     [Exercise 7.1] Fourier transform of the GTH local potential of a single
-    atom at the origin (eq. gth_local_g). At G = 0, the divergent Coulomb part
+    atom at the origin (primer, Appendix B). At G = 0, the divergent Coulomb part
     is discarded and the finite constant alpha is returned instead.
     """
     # Hints:
@@ -474,7 +474,7 @@ def gth_local_g(G2, Zion, rloc, C):
 def gth_external_potential(G, G2, M, positions, params):
     """
     [Exercise 7.1] Local pseudopotential of a set of atoms on the grid
-    (eq. vext_pseudo); `params` is a list with one parameter dict per atom.
+    (primer, Section 7); `params` is a list with one parameter dict per atom.
     """
     # Hint: as external_potential, but with gth_local_g(G2, ...) of every atom
     # in place of -4 pi Z / |G|^2, and keep the G = 0 coefficient.
@@ -487,7 +487,8 @@ def gth_projector_s_g(G, G2, M, R, rs):
     at R (appendix: projectors, with Y_00 = 1/sqrt(4 pi)).
     """
     # Hints:
-    #  * f(G) = 4 pi^(5/4) sqrt(2 rs^3) exp(-G^2 rs^2 / 2) for l = 0, i = 1.
-    #  * Multiply by Y_00 = 1/sqrt(4 pi), the phase factor exp(-i G.R) and
-    #    1/sqrt(Omega).
+    #  * Use the expressions for the projectors in Appendix B of the primer,
+    #    with l = 0 and i = 1 (look up Q in the table).
+    #  * Do not forget the angular part, the phase factor and the
+    #    normalization of the plane waves.
     raise NotImplementedError('Exercise 7.2')

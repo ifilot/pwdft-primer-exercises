@@ -27,9 +27,9 @@ def main():
     pwlib.check('projector is normalized: sum |p(G)|^2', np.sum(np.abs(pc)**2), 1.0, 1e-8)
     pr = pwlib.ifft_pw(pc, M)
     d = np.linalg.norm(pwlib.minimum_image(r, RO, M), axis=-1)
-    # TODO: the projector of eq. (gth_projector) times Y_00 = 1/sqrt(4 pi)
+    # TODO: the real-space GTH projector p^0_1(r) of Section 7 times Y_00 = 1/sqrt(4 pi)
     exact = None
-    pwlib.check('real-space projector vs eq. (gth_projector)',
+    pwlib.check('real-space projector vs the GTH projector formula (Section 7)',
                 np.abs(pr - exact).max() / exact.max(), 0.0, 1e-3)
 
     # (b) TODO: build normalized test functions (Gaussians of exponent 1):

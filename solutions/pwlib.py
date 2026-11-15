@@ -278,7 +278,7 @@ def ewald_energy(M, positions, charges, gcut=2.0, gamma=1e-8,
             Esr += 0.5 * q[i] * q[j] * np.sum(
                 erfc(np.sqrt(alpha) * d[mask]) / d[mask])
 
-    # long-range part, reciprocal space (eq. long-range-cos)
+    # long-range part, reciprocal space (long-range term with cosines, Section 4)
     B = 2.0 * np.pi * np.linalg.inv(M.T)
     G = integer_vectors(mmax) @ B
     G2 = np.einsum('ij,ij->i', G, G)
@@ -438,7 +438,7 @@ GTH_O = {'Zion': 6.0, 'rloc': 0.24455430, 'C': (-16.66721480, 2.48731132, 0.0, 0
 
 
 def gth_local_r(r, Zion, rloc, C):
-    """[provided] GTH local potential nu_loc(r) in real space (eq. gth_local)."""
+    """[provided] GTH local potential nu_loc(r) in real space (primer, Section 7)."""
     from scipy.special import erf
     r = np.asarray(r, dtype=float)
     x = r / rloc
@@ -452,7 +452,7 @@ def gth_local_r(r, Zion, rloc, C):
 def gth_local_g(G2, Zion, rloc, C):
     """
     [Exercise 7.1] Fourier transform of the GTH local potential of a single
-    atom at the origin (eq. gth_local_g). At G = 0, the divergent Coulomb part
+    atom at the origin (primer, Appendix B). At G = 0, the divergent Coulomb part
     is discarded and the finite constant alpha is returned instead.
     """
     G2 = np.asarray(G2, dtype=float)
@@ -473,7 +473,7 @@ def gth_local_g(G2, Zion, rloc, C):
 def gth_external_potential(G, G2, M, positions, params):
     """
     [Exercise 7.1] Local pseudopotential of a set of atoms on the grid
-    (eq. vext_pseudo); `params` is a list with one parameter dict per atom.
+    (primer, Section 7); `params` is a list with one parameter dict per atom.
     """
     Omega = cell_volume(M)
     vg = np.zeros(G2.shape, dtype=complex)

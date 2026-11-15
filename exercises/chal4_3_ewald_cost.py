@@ -39,7 +39,8 @@ def nacl_supercell(a, n):
 def main():
     # (a) validate ewald_fast against pwlib.ewald_energy (CO) and against the
     #     Madelung constant of NaCl (2 x 2 x 2 supercell, a = 10.66 bohr)
-    # (b) wall time versus G_cut for CO (a0 = 10 and 20) and NaCl 2 x 2 x 2;
+    # (b) wall time versus G_cut for rock-salt supercells of 1 x 1 x 1,
+    #     2 x 2 x 2 and 3 x 3 x 3 conventional cells (8, 64 and 216 ions);
     #     use time.perf_counter() and take the best of a few repetitions
     plt.show()
 

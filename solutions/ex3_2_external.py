@@ -11,7 +11,7 @@ XI = 2.837297
 
 
 def epot_periodic(a0, r2=0.75):
-    """Expected nuclear attraction of the Gaussian cloud (eq. epot_periodic)."""
+    """Expected nuclear attraction of the Gaussian cloud (primer, Section 3)."""
     return -2.0 * np.sqrt(2.0 / np.pi) + XI / a0 - 2.0 * np.pi * r2 / (3.0 * a0**3)
 
 
@@ -34,8 +34,8 @@ def main():
 
     # (a) nuclear attraction
     enuc, erep = energies(a0, N, R)
-    pwlib.check('E_nuc vs eq. (epot_periodic)', enuc, epot_periodic(a0), 1e-6)
-    pwlib.check('E_nuc vs primer Table (L = 10)', enuc, -1.3136, 5e-5)
+    pwlib.check('E_nuc vs the periodic-system formula (Section 3)', enuc, epot_periodic(a0), 1e-6)
+    pwlib.check('E_nuc vs Table in Section 4 (L = 10)', enuc, -1.3136, 5e-5)
 
     # (b) the Madelung terms cancel in the sum
     eiso = 2.0 * (1.0 - np.sqrt(2.0)) / np.sqrt(np.pi)

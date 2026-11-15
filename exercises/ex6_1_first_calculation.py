@@ -19,7 +19,7 @@ E_REF_H2 = -1.16673          # Gaussian basis-set limit, PBE (primer, Section 6)
 
 def main():
     L = 15.0
-    results = {}
+    results = {}        # the calculations for parts (a) to (c)
     for ecut in (20, 40, 80):
         calc = PWDFT(pwlib.diatomic('H2', L), cutoff=ecut, xc='pbe',
                      pseudopotential='all-electron')
@@ -34,6 +34,7 @@ def main():
     pwlib.check('error at 20 Ht (primer: 15 mHt)', res.energy.total - E_REF_H2,
                 0.015, 1e-3)
 
+    # (b) the number of plane waves
     for ecut, r in results.items():
         # TODO: estimate the number of plane waves inside the sphere
         # 1/2 |G|^2 <= E_cut from the volume per G-vector
@@ -41,7 +42,7 @@ def main():
         pwlib.check('N_pw estimate, E_cut = %d' % ecut,
                     r.basis.plane_waves / estimate, 1.0, 0.01)
 
-    # (b) TODO: tabulate E_total, its error and eps_1 for the three cut-offs
+    # (c) TODO: tabulate E_total, its error and eps_1 for the three cut-offs
 
     # (c) the occupied orbital, made real-valued by PyPWDFT
     OUTPUT.mkdir(exist_ok=True)

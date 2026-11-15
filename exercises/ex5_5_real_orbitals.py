@@ -43,7 +43,9 @@ def main():
     names = ['1a1', '2a1', 't2 (a)', 't2 (b)', 't2 (c)']
 
     # (a) TODO: for every orbital, the imaginary fraction before and after
-    # multiplication by exp(i theta_opt); store the rotated orbitals in `real`
+    # multiplication by exp(i theta_opt), and after the recipe of the primer
+    # (phase taken at the grid point of largest |psi|); store the orbitals
+    # rotated with theta_opt in `real`
     real = []
     pwlib.check('2a1 becomes real (Im-fraction)', imaginary_fraction(real[1]), 0.0, 1e-10)
 

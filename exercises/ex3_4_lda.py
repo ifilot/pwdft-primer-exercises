@@ -37,6 +37,9 @@ def main():
         an = pwlib.integrate(fun(rho)[1] * drho, M)
         pwlib.check('dE/d(eps) vs integral of %s * drho' % label, fd, an, 1e-7)
 
+    # (optional) TODO: repeat with the broad perturbation cos(2 pi x / a0),
+    # which does not vanish where rho does, and explain the deviation
+
     # (c) TODO: the gradient of rho from its plane-wave expansion, compared
     # with the analytical gradient -2 alpha (r - R) rho, for N = 32 and 48
 

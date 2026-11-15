@@ -73,10 +73,14 @@ def main():
         print('%3i  %6i   %10.3f     %8.3f    %8.3f      %.1e           %.1e'
               % (Nh, Nh**3, td, ti, tb, np.abs(ed - ei).max(),
                  np.abs(ed - eb).max()))
+    # the dense diagonalization scales as N_pw^3 = N^9
+    print('extrapolated dense diagonalization for N = 32: %.0f s (%.1f h), '
+          'matrix of %.0f GB' % (td * (32 / 14)**9, td * (32 / 14)**9 / 3600,
+                                  (32**3)**2 * 16 / 1e9))
     print('dense (N = 14):', np.round(ed, 6))
     print('eigsh (N = 14):', np.round(ei, 6))
     print('block (N = 14):', np.round(eb, 6))
-    pwlib.check('block solver finds all three 2p states', np.abs(ed - eb).max(),
+    pwlib.check('block solver finds all three p-like states', np.abs(ed - eb).max(),
                 0.0, 1e-6)
 
 

@@ -22,8 +22,13 @@ def main():
     # (a) the G = 0 constant and the value at the nucleus
     alpha = pwlib.gth_local_g(np.array([0.0]), Z, rloc, C)[0]
     pwlib.check('alpha (primer, appendix)', alpha, 0.134, 5e-4)
-    pwlib.check('nu_loc(0) (primer: about -36 Ht)', pwlib.gth_local_r(0.0, Z, rloc, C),
-                -36.24, 0.01)
+    # nu_loc(0) from YOUR reciprocal-space expression: for a spherical
+    # function, nu(0) = (2 pi)^-3 int nu(G) d^3G = 1/(2 pi^2) int nu(G) G^2 dG
+    v0 = quad(lambda g: pwlib.gth_local_g(np.array([g * g]), Z, rloc, C)[0] * g * g
+              if g > 0 else 0.0, 0.0, 60.0, limit=400)[0] / (2 * np.pi**2)
+    pwlib.check('nu_loc(0) from nu_loc(G) (primer: about -36 Ht)', v0, -36.24, 0.01)
+    pwlib.check('... equals the real-space value', v0,
+                pwlib.gth_local_r(0.0, Z, rloc, C), 1e-6)
 
     # (b) reciprocal space: compare with the Coulomb tails
     G2 = np.geomspace(1e-2, 800.0, 2000)
@@ -53,16 +58,22 @@ def main():
         pwlib.check('radial transform at G = %4.1f' % g, num, ana, 1e-7)
 
     # (c) the potential on the grid of a periodic cell
-    print('\n a0    nu_ext(R) - nu_loc(0)   xi Z_ion / a0 + alpha / Omega')
-    for a0, N in ((10.0, 64), (15.0, 96), (20.0, 128)):
+    # Discarding only the divergent -4 pi Z_ion / G^2 at G = 0 is equivalent to
+    # adding a neutralizing background to a lattice of POINT ions; keeping the
+    # finite remainder alpha restores everything else (the spread of the ion
+    # charge and the short-range terms). The offset is therefore the Madelung
+    # term of a point charge, xi Z_ion / a0, and alpha does not appear in it.
+    # The grid must be fine enough (spacing ~0.1 bohr) to resolve this.
+    print('\n a0    nu_ext(R) - nu_loc(0)   xi Z_ion / a0')
+    for a0, N in ((10.0, 128), (15.0, 144), (20.0, 192)):
         M = pwlib.cubic_cell(a0)
         G, G2g = pwlib.gvectors(M, N)
         R = np.full(3, a0 / 2)
         v = pwlib.gth_external_potential(G, G2g, M, [R], [p])
         shift = v[N // 2, N // 2, N // 2] - pwlib.gth_local_r(0.0, Z, rloc, C)
-        pred = XI * Z / a0 + alpha / a0**3
-        print('%4.0f   %+.5f               %+.5f' % (a0, shift, pred))
-        pwlib.check('offset at the nucleus, a0 = %g' % a0, shift, pred, 1e-3)
+        pred = XI * Z / a0
+        print('%4.0f   %+.7f             %+.7f' % (a0, shift, pred))
+        pwlib.check('offset at the nucleus, a0 = %g' % a0, shift, pred, 1e-5)
         if a0 == 10.0:
             x = np.arange(N) * a0 / N
             ax[1].plot(x, v[:, N // 2, N // 2], 'o-', ms=3, label=r'$\nu_\mathrm{ext}$ on the grid')

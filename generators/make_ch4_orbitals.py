@@ -30,6 +30,23 @@ def main():
     positions, charges = chal.CH4
     res = chal.scf(10.0, 32, positions, charges, etol=1e-9, rhotol=1e-7)
 
+    # diagonalize once more in the potential of the FINAL density, so that the
+    # stored orbitals and eigenvalues belong to one and the same Hamiltonian
+    M = pwlib.cubic_cell(10.0)
+    G, G2 = pwlib.gvectors(M, 32)
+    vext = pwlib.external_potential(G, G2, M, positions, charges)
+    veff = pwlib.effective_potential(res['rho'], vext, G2)
+    eps, C0 = pwlib.lowest_eigenstates(veff, G2, M, len(res['C']), C0=res['C'],
+                                       tol=1e-10, maxiter=1000)
+    res['eigenvalues'], res['C'] = eps, C0
+    res['energy'] = pwlib.energy_components(C0, M, G2, vext,
+                                            pwlib.ewald_energy(M, positions, charges))
+    rho = pwlib.density_from_orbitals(C0, M)
+    veff = pwlib.effective_potential(rho, vext, G2)
+    resid = max(np.linalg.norm(pwlib.apply_hamiltonian(c, veff, G2, M) - e * c)
+                for c, e in zip(C0, eps))
+    print('max residual |H[rho(C)] c - eps c| = %.1e' % resid)
+
     # give every orbital a random global phase so that students cannot rely
     # on the (implementation-dependent) phase returned by ARPACK
     rng = np.random.default_rng(2026)

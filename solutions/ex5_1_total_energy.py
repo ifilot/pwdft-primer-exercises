@@ -33,7 +33,7 @@ def main():
     E = pwlib.energy_components(C, M, G2, vext, eewald)
     for k, v in E.items():
         print('  %-8s %+.6f Ht' % (k, v))
-    ref = {'kinetic': 31.907966, 'nuclear': -81.735803, 'hartree': 19.038083,
+    ref = {'kinetic': 31.907965, 'nuclear': -81.735803, 'hartree': 19.038083,
            'xc': -6.284507, 'ewald': -0.481269, 'total': -37.555531}
     for k in ref:
         pwlib.check('E_%s' % k, E[k], ref[k], 2e-6)
@@ -47,8 +47,14 @@ def main():
     pwlib.check('2 sum eps - E_H - int v_xc rho + E_xc + E_Ewald = E_total',
                 2 * eps.sum() + corr, E['total'], 1e-5)
 
-    # (d) the electrostatic terms only make sense together
-    print('E_nuc + E_H + E_Ewald = %.6f Ht' % (E['nuclear'] + E['hartree'] + eewald))
+    # (d) is the energy converged? The largest |G| along a Cartesian axis is
+    # pi N / a0, i.e. a kinetic energy of 1/2 (pi N / a0)^2; Challenge 2.3 gives
+    # E_cut ~ 23 Z^2 Ht for 1 % accuracy in the kinetic energy of a 1s orbital
+    emax = 0.5 * (np.pi * N / a0)**2
+    print('largest 1/2 |G|^2 along an axis: %.1f Ht' % emax)
+    for name, Z in (('H 1s', 1), ('C 1s', 6)):
+        print('E_cut needed for %s (23 Z^2): %6.0f Ht' % (name, 23 * Z**2))
+    pwlib.check('largest 1/2 |G|^2 along an axis', emax, 50.5, 0.1)
 
 
 if __name__ == '__main__':

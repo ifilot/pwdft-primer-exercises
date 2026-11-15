@@ -15,6 +15,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install numpy scipy matplotlib threadpoolctl
       - name: Run the quick solutions (long ones are run locally)
         run: bash run_solutions.sh --quick
