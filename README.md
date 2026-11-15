@@ -4,7 +4,8 @@ Python exercises accompanying the primer *Plane-wave density functional
 theory*. Over the course of the exercises you build a small plane-wave DFT
 code yourself, ending with a self-consistent field calculation of methane.
 
-The problem statements are in the primer (draft: [EXERCISES.md](EXERCISES.md)).
+The problem statements are in the exercise boxes at the end of Sections 2–7
+of the primer.
 
 ## Two kinds of exercise
 
